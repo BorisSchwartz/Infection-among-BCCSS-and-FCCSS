@@ -502,130 +502,109 @@ ods rtf close;
 %global liste_variables;
 %let liste_variables = 	sex c_age_diag cl_rt_rate cl_rt_thymus bipulm_bs cl_rt_pituitary cl_rt_foie splenectomy H R T autre pb_k pulm_choc_sris coeur_choc_sris hepat_choc_sris greffe_choc_sris Insuff_immun;
 
-/*6.1.FCCSS: (expected calculation from matched "controls" from ESND)*/
-data indic_hosp;
-set esnd.cons_temoin;
-annee = sor_ann;
-if annee = . then annee = year_amd;
-indic_inf_grave = 0;
-if (annee le 2018) and (annee ne .) and (inf_grave=1) then indic_inf_grave = 1;
-num_enq_num = num_enq*1;
+/*6.1.FCCSS*/
+/*Import rates*/
+ data cha.TAUX_fr    ;
+    %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+    infile '&path.\taux_esnd.txt' delimiter='09'x MISSOVER DSD lrecl=32767 firstobs=2 ;
+       informat POP_ESND best32. ;
+       informat SEX best32. ;
+       informat AGE best32. ;
+       informat ANNEE best32. ;
+       informat NB_TOUTE_BACT best32. ;
+       informat NB_LOW best32. ;
+       informat NB_SEPSIS best32. ;
+       informat NB_INF_GRAVE best32. ;
+       informat TX_TOUTE_BACT nlnum32. ;
+       informat TX_LOW nlnum32. ;
+       informat TX_SEPSIS nlnum32. ;
+       informat TX_INF_GRAVE nlnum32. ;
+       format POP_ESND best12. ;
+       format SEX best12. ;
+       format AGE best12. ;
+       format ANNEE best12. ;
+       format NB_TOUTE_BACT best12. ;
+       format NB_LOW best12. ;
+       format NB_SEPSIS best12. ;
+       format NB_INF_GRAVE best12. ;
+       format TX_TOUTE_BACT nlnum12. ;
+       format TX_LOW nlnum12. ;
+       format TX_SEPSIS nlnum12. ;
+       format TX_INF_GRAVE nlnum12. ;
+    input
+                POP_ESND
+                SEX
+                AGE
+                ANNEE
+                NB_TOUTE_BACT
+                NB_LOW
+                NB_SEPSIS
+                NB_INF_GRAVE
+                TX_TOUTE_BACT
+                TX_LOW
+                TX_SEPSIS
+                TX_INF_GRAVE
+    ;
+    if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+    run;
+
+/*The corresponding reference rate is added to each line according to year, sex and age*/
+data fr;
+set cha.individ1y_inf_grave;
+if country = "FRA";
+/*Age in the middle of the year*/
+age_pat = round((mdy(06,30,annee)-date_nais)/365.25);
+keep id sex age_pat annee py choc_sris;
 run;
-/*Sort by year and indicator: keep only the first line*/
-%tri(indic_hosp, ben_nir_tot descending indic_inf_grave annee);
-data indic_hosp;
-set indic_hosp;
-by ben_nir_tot;
-if first.ben_nir_tot;
-num_enq_num = num_enq*1;
+%tri(fr, sex age_pat annee);
+data taux;
+set cha.taux_fr;
+age_pat = age;
+/*Inf grave*/
+keep sex age_pat annee tx_inf_grave;
 run;
+%tri(taux, sex age_pat annee);
+/*Merging with reference rates and calculation of expected numbers*/
+data fr_rate;
+merge fr taux;
+by sex age_pat annee;
+/*expected (called "nb_hospi_mean")*/
+nb_hospi_mean = py*tx_inf_grave;
+/*observed*/
+hospi_inf_grave = choc_sris;
+/*Removal of surplus lines*/
+if py = . then delete;
+run;
+/*Aggregated database for patient follow-up: one line per patient*/
 proc sql;
-create table temp_moy_inf_grave as
-select distinct num_enq, ben_nir_tot, sum(indic_inf_grave) as nb_hospi
-from indic_hosp
-group by num_enq, ben_nir_tot;
+create table fr_ag as
+select distinct id, sum(hospi_inf_grave) as hospi_inf_grave, sum(nb_hospi_mean) as nb_hospi_mean, sum(py) as py
+from fr_rate
+group by id;
 quit;
-%supp(indic_hosp);
-/*Aggregated control hospitalization statistics by patient*/
-Proc MEANS Data=temp_moy_inf_grave
-n mean std median qrange p25 p75;
-var nb_hospi;
-class num_enq;
-ods output summary=hospi_moy;
-run;
-data hospi_moy;
-set hospi_moy;
-/*put in numeric for merging*/
-num_enq_num = num_enq*1;
-run;
-/*Add observed hospitalization by patient*/
-proc sql;
-create table cons_fccss as
-select num_enq, max(choc_sris) as hospi_inf_grave
-from cha.individ1y_inf_grave
-where num_enq ne .
-group by num_enq;
-quit;
-proc sql;
-create table hospi_moy_inf_grave as
-select b.num_enq,b.hospi_inf_grave,nb_hospi_n,nobs, nb_hospi_mean, nb_hospi_stdDev, nb_hospi_qrange, nb_hospi_p25, nb_hospi_p75
-from hospi_moy as a full outer join cons_fccss as b
-on a.num_enq_num = b.num_enq;
-quit;
-/*Ajout sexe et ddn*/
-proc sql;
-create table hospi_moy_inf_grave as
-select a.*, b.sex, b.date_nais 
-from hospi_moy_inf_grave as a left join cha.analyse_choc_sris as b
-on a.num_enq = b.num_enq;
-quit;
-data hospi_moy_inf_grave;
-set hospi_moy_inf_grave;
-if num_enq = . then delete;
-ann_nais = year(date_nais);
-run;
-/*For patients with no controls (few ones), we assign the mean value for the same year of birth and sex (i.e. imputation)*/
-proc sql;
-create table mean_exp as
-select mean(nb_hospi_Mean) as mean_exp,sex, ann_nais
-from hospi_moy_inf_grave
-group by sex, ann_nais;
-quit;
-data imput;
-set hospi_moy_inf_grave;
-where nb_hospi_N = .;
-run;
-%tri(imput, sex ann_nais);
-data imput_ok;
-merge imput mean_exp;
-by sex ann_nais;
-if num_enq ne .;
-nb_hospi_Mean = mean_exp;
-run;
-/*Empty lines are replaced by imputed lines*/
-data hospi_moy_inf_grave;
-set hospi_moy_inf_grave imput_ok;
-if nb_hospi_Mean = . then delete;
-drop mean_exp sex date_nais ann_nais;
-run;
-/*Clear output window*/
-dm 'odsresults; clear';
-/*Add PY*/
-proc sql;
-create table PY as
-select num_enq,sum(py) as py
-from cha.individ1y_inf_grave
-group by num_enq;
-quit;
-/*Merging with hospitalization base*/
-%tri(py, num_enq);
-%tri(hospi_moy_inf_grave, num_enq);
-data FCCSS;
-merge hospi_moy_inf_grave py;
-by num_enq;
-if num_enq ne .;
-run;
-/*definition of formats*/
-data FCCSS;
-set FCCSS;
+/*Definition of formats*/
+data fr_ag;
+set fr_ag;
 format c_age_fin $20. c_fup_fin $20. c_age_2006 $20. c_age_diag $20. ttt_era $20. trt $20.;
 run;
-%tri(cha.individ1y_inf_grave, num_enq annee);
+%tri(cha.individ1y_inf_grave, id);
 data last_ligne;
 set cha.individ1y_inf_grave;
-by num_enq;
-if last.num_enq;
-if num_enq ne .;
+by id;
+if last.id;
+if country = "FRA";
+/*drop py in this base to avoid overwriting data*/
+drop py;
 run;
 /* ADD TREATMENT DATA*/
 proc sql;
-create table FCCSS as
+create table fr_ag as
 select *
-from FCCSS as a left join last_ligne as b
-on a.num_enq = b.num_enq;
+from fr_ag as a left join last_ligne as b
+on a.id = b.id;
 quit;
 
-/*6.2.BCCSS*/
+/*6.2. BCCSS*/
 /*Import rates*/
 data WORK.Taux_uk;
 %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
@@ -673,10 +652,12 @@ where risk_score = 3;
 keep sex age_pat annee rate;
 run;
 %tri(taux, sex age_pat annee);
-/*Merging with reference rates and calculating expected*/
+/*Merging with reference rates and calculation of expected numbers*/
 data uk_rate;
 merge uk taux;
 by sex age_pat annee;
+/*Calculation of py since april 1997 (i.e. on remove 3 months)*/
+if annee = 2017 then py = py - (3/12);
 /*expected (called "nb_hospi_mean" to harmonise with FCCSS data)*/
 nb_hospi_mean = py*rate/100000;
 /*observed*/
@@ -684,10 +665,11 @@ hospi_inf_grave = choc_sris;
 /*Removal of surplus lines*/
 if py = . then delete;
 run;
+
 /*Aggregated database for patient follow-up: one line per patient*/
 proc sql;
 create table uk_ag as
-select distinct id, sum(hospi_inf_grave) as hospi_inf_grave, sum(nb_hospi_mean) as nb_hospi_mean
+select distinct id, sum(hospi_inf_grave) as hospi_inf_grave, sum(nb_hospi_mean) as nb_hospi_mean, sum(py) as py
 from uk_rate
 group by id;
 quit;
@@ -702,17 +684,19 @@ set cha.individ1y_inf_grave;
 by id;
 if last.id;
 if country = "ENG";
+/*drop py in this base to avoid overwriting data*/
+drop py;
 run;
 /* ADD TREATMENT DATA*/
 proc sql;
-create table BCCSS as
+create table uk_ag as
 select *
 from uk_ag as a left join last_ligne as b
 on a.id = b.id;
 quit;
 /*Merging FCCSS and BCCSS data*/
 data shr_aer_inf_grave;
-set FCCSS BCCSS;
+set fr_ag uk_ag;
 keep &liste_variables num_enq deces debut sortie hospi_inf_grave /*=obs*/ nb_hospi_mean/*=exp*/ py id;
 run;
 
@@ -768,7 +752,7 @@ select;
     end;
 	when (not missing(cl_anthra)) do;
       effect = "cl_anthra";
-      classvar1 = "Anthracyclines, in mg/m²";
+      classvar1 = "Anthracyclines, in mg/mÂ²";
 	  classlevel1 = cl_anthra;
     end;
     when (not missing(anthra)) do;
@@ -949,11 +933,11 @@ run;
 	%let nb_elem = %sysevalf(1+%sysfunc(count((&liste),%str( ))));		/*Number of elements in the list (if values are added to/removed from lists, the program still runs)*/
 	%let liste_var_RHR = ;
 	%do i = 1 %to &nb_elem;					/*Loop over the number of elements in the list*/
-		%let variab = %scan(&liste,&i,’ ’); 
+		%let variab = %scan(&liste,&i,â€™ â€™); 
 /**/
 		%RHR(&variab);
 /**/
-		%let variab_var = RHR_%scan(&liste,&i,’ ’);  /*We select the ith variable in the list*/
+		%let variab_var = RHR_%scan(&liste,&i,â€™ â€™);  /*We select the ith variable in the list*/
 		%let liste_var_RHR = &liste_var_RHR &variab_var;
 	%end;
 %mend;
@@ -1015,11 +999,11 @@ run;
 	%let nb_elem = %sysevalf(1+%sysfunc(count((&liste),%str( ))));		/*Number of elements in the list (if values are added to/removed from lists, the program still runs)*/
 	%let liste_var_aer = ;
 	%do i = 1 %to &nb_elem;					/*Loop over the number of elements in the list*/
-		%let variab = %scan(&liste,&i,’ ’); 
+		%let variab = %scan(&liste,&i,â€™ â€™); 
 /**/
 		%AER(&variab);
 /**/
-		%let variab_var = aer_%scan(&liste,&i,’ ’);  /*We select the ith variable in the list*/
+		%let variab_var = aer_%scan(&liste,&i,â€™ â€™);  /*We select the ith variable in the list*/
 		%let liste_var_aer = &liste_var_aer &variab_var;
 	%end;
 %mend;
@@ -1305,7 +1289,7 @@ set pa;
 /*Recovery of modalities*/
 %let nb_elem = %sysevalf(1+%sysfunc(count((&&liste_variables_&model),%str( ))));
 %do i = 1 %to &nb_elem;					/*Loop over the number of elements in the list*/
-	%let v_indiv = %scan(&&liste_variables_&model,&i,’ ’);  /* select the ith variable in the list*/ 
+	%let v_indiv = %scan(&&liste_variables_&model,&i,â€™ â€™);  /* select the ith variable in the list*/ 
 	var_&i = put(&v_indiv, 20.);
 	var_&i = STRIP(var_&i);
 	if var_&i ne "_" and var_&i ne "" then modal = &v_indiv;
@@ -1409,7 +1393,7 @@ proc report data = EMR_fusion
 	style(summary)=[frame=void background=white ]
 	style(report column header summary)=[background=white borderrightcolor=white borderleftcolor=white];
 column 	effect
-		("Modalités" modalite)
+		("ModalitÃ©s" modalite)
 		("RR (95% CI)" IC_RER)
       	("p-value" pv)
 		("p-value globale" pv_globale)
@@ -1433,9 +1417,9 @@ ods rtf close;
 %let liste_indiv = ;
 %let liste_glob = ;
 %do i = 1 %to &nb_elem;					/*Loop over the number of elements in the list*/
-	%let variab_indiv = RR.rr_&n._%scan(&liste,&i,’ ’);  /*select the ith variable in the list*/
+	%let variab_indiv = RR.rr_&n._%scan(&liste,&i,â€™ â€™);  /*select the ith variable in the list*/
 	%let liste_indiv = &liste_indiv &variab_indiv;
-	%let variab_glob = RR.rr_glob_&n._%scan(&liste,&i,’ ’);  /*select the ith variable in the list*/
+	%let variab_glob = RR.rr_glob_&n._%scan(&liste,&i,â€™ â€™);  /*select the ith variable in the list*/
 	%let liste_glob = &liste_glob &variab_glob;
 %end;
 %put &liste_indiv;
@@ -1713,7 +1697,7 @@ run;
 
 /*9.2.Andersen Gill method for recurrent event analyse (need previous data management, not shown. See tutorial in appendix of:
 Amorim, L. D., & Cai, J. (2015). Modelling recurrent events: a tutorial for analysis in epidemiology. 
-International journal of epidemiology, 44(1), 324–333. https://doi-org.proxy.insermbiblio.inist.fr/10.1093/ije/dyu222)*/
+International journal of epidemiology, 44(1), 324â€“333. https://doi-org.proxy.insermbiblio.inist.fr/10.1093/ije/dyu222)*/
 /*EXAMPLE for inf_grave endpoint: status = 1 if inf_grave = 1*/
 proc phreg data = base_AG_inf_grave covs covm;
 class splenectomy(ref="0") sex(ref="1") c_rt(ref="Other") ttt_era(ref="A before 1980") greffe_tb(ref="0") Insuff_immun(ref="0") hepat_tb(ref="0") pulm_tb(ref="0") coeur_tb(ref="0") pb_k(ref="0")
