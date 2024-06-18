@@ -976,7 +976,7 @@ pyr1=log(Pyr_Sum);
 /*adding a negligeable value to avoid division by zero*/
 Expected1=log(Nexp_Sum+0.000000001 );
 SMR = (cases_Sum/Nexp_Sum);
-AER = ((cases_Sum-Nexp_Sum)/pyr_sum)*1000;
+AER = ((cases_Sum-Nexp_Sum)/pyr_sum)*10000;
 run;
 ods output Tests3=aer_&var;
 proc glimmix data=aer_all; 
