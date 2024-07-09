@@ -2,6 +2,9 @@ SAS program created by Boris Schwartz, CESP-INSERM-U1018 Radiation Epidemiology 
 
 Late Infection-Related Risk among Childhood Solid Cancer Survivors: A binational study from the French and British Childhood Cancer Survivor Studies	
 
+Free space required on your computer : around 30 Go.
+Note: Some warnings may appear in the log, but this has no effect on the program.
+
 Global program with:
 
 1.Set up (change folders and library according to your computer to execute the following program)
