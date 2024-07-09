@@ -4,15 +4,15 @@ Late Infection-Related Risk among Childhood Solid Cancer Survivors: A binational
 
 Global program with:
 
-1.Code list for infections (ICD-9-10)
+1.Set up (change folders and library according to your computer to execute the following program)
 
-2.frequently used macros
+2.Code list for infections (ICD-9-10)
 
-3.Individual databases creation per type of infection
+3.frequently used macros
 
-4.Calculation of PY : from a base with one line per patient to a base with one line per patient per year
+4.Sankey diagram (/*Save sankey scripts (rawtosankey.sas, sankey.sas and saneybarchart.sas in the folder before). SAS Sankey macro created by Shane Rosanbalm of Rho, Inc. 2015 https://github.com/RhoInc/sas-sankeybarchart*/)
 
-5.Sankey diagram (/*Sankey programs to download from: SAS Sankey macro created by Shane Rosanbalm of Rho, Inc. 2015 https://github.com/RhoInc/sas-sankeybarchart*/)
+5.Calculation of PY : from a base with one line per patient to a base with one line per patient per year
 
 6.SHR/AER Calculation: example for inf_grave endpoint (To adapt and reproduce for each endpoint)
 
@@ -24,4 +24,3 @@ Global program with:
 Amorim, L. D., & Cai, J. (2015). Modelling recurrent events: a tutorial for analysis in epidemiology. 
 International journal of epidemiology, 44(1), 324–333. https://doi-org.proxy.insermbiblio.inist.fr/10.1093/ije/dyu222 _*/)
 
-Warning: some steps may require previous data management that is not shown.
