@@ -14,7 +14,7 @@ Global program with:
 
 2.Code list for infections (ICD-9-10)
 
-3.frequently used macros
+3.Frequently used macros
 
 4.Sankey diagram (/*Save sankey scripts (rawtosankey.sas, sankey.sas and saneybarchart.sas in the folder before). SAS Sankey macro created by Shane Rosanbalm of Rho, Inc. 2015 https://github.com/RhoInc/sas-sankeybarchart*/)
 
