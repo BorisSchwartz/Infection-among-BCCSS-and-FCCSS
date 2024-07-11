@@ -5,10 +5,10 @@ Late Infection-Related Risk among Childhood Solid Cancer Survivors: A binational
 Free space required on your computer : 30 Go.
 Note: Some warnings may appear in the log, but this has no effect on the program.
 Note: results appear as sas tables and/or rtf files (Word format). These are crude internal working documents. Result tables in the article have been formatted then from these documents.
-
 Demo datasets have been anonymized and shorten compared to original data.
-
 Run time for demo: 274 seconds
+
+Save sankey scripts (rawtosankey.sas, sankey.sas and sankeybarchart.sas in your folder before execute program).
 
 Global program with:
 
@@ -18,7 +18,7 @@ Global program with:
 
 3.Frequently used macros
 
-4.Sankey diagram (/*Save sankey scripts (rawtosankey.sas, sankey.sas and saneybarchart.sas in the folder before). SAS Sankey macro created by Shane Rosanbalm of Rho, Inc. 2015 https://github.com/RhoInc/sas-sankeybarchart*/)
+4.Sankey diagram (/*Save sankey scripts (rawtosankey.sas, sankey.sas and sankeybarchart.sas in your folder before execute program). SAS Sankey macro created by Shane Rosanbalm of Rho, Inc. 2015 https://github.com/RhoInc/sas-sankeybarchart*/)
 
 5.Calculation of PY : from a base with one line per patient to a base with one line per patient per year
 
