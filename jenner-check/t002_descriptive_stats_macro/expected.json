@@ -1,0 +1,15 @@
+{
+  "_captured_at": "2026-08-20T12:52:00Z",
+  "_captured_run_id": "r_d33432126db14d66a4f8c5b4a74e73f5",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: FORMAT TYPEG defined (13 ranges).",
+    "NOTE: PROC SORT statement used.",
+    "NOTE: PROC FREQ statement used.",
+    "NOTE: Wrote outlib.cohort_sorted (10 rows, 3 columns).",
+    "NOTE: 1 dataset(s) deleted."
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}

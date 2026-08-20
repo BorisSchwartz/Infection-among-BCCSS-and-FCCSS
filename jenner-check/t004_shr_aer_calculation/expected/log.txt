@@ -1,0 +1,40 @@
+NOTE: Option OBS changed to 100.
+NOTE: DATA shr_aer_inf_grave
+
+NOTE: Processing inline DATALINES (8 lines)
+
+NOTE: Read 8 rows from DATALINES.
+NOTE: Wrote shr_aer_inf_grave (8 rows, 6 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC MEANS
+NOTE: Output dataset inf_grave has 5 observations and 7 variables.
+NOTE: PROC MEANS statement used.
+NOTE: DATA SHR_inf_grave
+
+
+NOTE: Read 5 rows from inf_grave.
+NOTE: Wrote SHR_inf_grave (5 rows, 30 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA SHR_inf_grave
+
+
+NOTE: Read 5 rows from SHR_inf_grave.
+NOTE: Wrote SHR_inf_grave (5 rows, 7 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA SHR_inf_grave
+
+
+NOTE: Read 5 rows from SHR_inf_grave.
+NOTE: Wrote SHR_inf_grave (5 rows, 7 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC PRINT data=SHR_inf_grave
+
+NOTE: PROC PRINT completed: 5 observations printed, 7 variables

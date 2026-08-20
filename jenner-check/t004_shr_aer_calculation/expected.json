@@ -1,0 +1,13 @@
+{
+  "_captured_at": "2026-08-20T13:12:00Z",
+  "_captured_run_id": "r_164d21409a0b45508664f91265f58873",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: Output dataset inf_grave has 5 observations and 7 variables.",
+    "NOTE: Wrote SHR_inf_grave (5 rows, 30 columns).",
+    "NOTE: PROC PRINT completed: 5 observations printed, 7 variables"
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}

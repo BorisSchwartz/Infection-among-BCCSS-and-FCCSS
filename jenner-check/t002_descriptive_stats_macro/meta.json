@@ -1,0 +1,7 @@
+{
+  "bundle": "t002_descriptive_stats_macro",
+  "source_file": "Infection Study - BS.sas",
+  "source_blob_sha": "df951d6183379cefbb43ae25c9150b58f4777302",
+  "source_commit": "dc8d01fc0c4ccc4737a84b011e87911131332b90",
+  "notes": "Exercises the author's four hand-written utility macros (section 3, lines ~133-164, unmodified): %tri (sort), %QL (PROC FREQ descriptive stats for a qualitative variable), %svg (save a table into a named library) and %supp (PROC DELETE a work table), plus the TYPEG tumour-group format the program defines in section 1 (proc format, lines ~78-90). Driven end-to-end (sort -> describe -> save -> delete) against a 10-row mock patient table (id, typeg, sex) standing in for the protected cohort extract these macros are called against throughout the original ~1800-line program."
+}

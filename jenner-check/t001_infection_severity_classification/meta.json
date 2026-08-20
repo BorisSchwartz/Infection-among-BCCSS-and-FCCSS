@@ -1,0 +1,7 @@
+{
+  "bundle": "t001_infection_severity_classification",
+  "source_file": "Infection Study - BS.sas",
+  "source_blob_sha": "df951d6183379cefbb43ae25c9150b58f4777302",
+  "source_commit": "dc8d01fc0c4ccc4737a84b011e87911131332b90",
+  "notes": "Reproduces the author's ICD-9/10 infection-severity classification logic (section 2 code lists + the 'data tranF3' block, lines ~92-131 and ~206-215): matching the first 3-4 characters of a diagnosis code against fixed code lists to label each event low-grade / sepsis / severe (choc_sris). Driven by a small mock 8-row event table (id, code1) standing in for the protected patient-level cohort extract. Two minimal syntax adaptations were required for the current Jenner release and are documented in the script header and filed as engine regressions: (1) macro-variable code lists are referenced as `in &listname` rather than `in (&listname)` because Jenner's IN-list parser rejects the double-parenthesized form produced by the author's original `in (&listname)` idiom; (2) an explicit LENGTH inf $20. statement was added because Jenner does not honor a FORMAT-only implied character length once the variable is also assigned in the DATA step body, truncating 'choc_sris' to 'choc_s'. The classification rules themselves are unchanged."
+}

@@ -1,0 +1,15 @@
+{
+  "_captured_at": "2026-08-20T13:05:00Z",
+  "_captured_run_id": "r_e4c105a384f442d68f47a4e98c69f859",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: Output dataset smr_all has 2 observations and 5 variables.",
+    "NOTE: PROC GLIMMIX data=smr_all",
+    "NOTE: ODS OUTPUT: ParameterEstimates written to 'aa'.",
+    "NOTE: Wrote EMR_sex (1 rows, 6 columns).",
+    "NOTE: PROC PRINT completed: 1 observations printed, 6 variables"
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}
