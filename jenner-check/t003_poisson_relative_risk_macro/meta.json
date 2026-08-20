@@ -1,0 +1,7 @@
+{
+  "bundle": "t003_poisson_relative_risk_macro",
+  "source_file": "Infection Study - BS.sas",
+  "source_blob_sha": "df951d6183379cefbb43ae25c9150b58f4777302",
+  "source_commit": "dc8d01fc0c4ccc4737a84b011e87911131332b90",
+  "notes": "Calls the author's %RR macro (section 7.1, lines ~1068-1126) -- the core Poisson-regression relative-risk estimator this cohort study is built on, called ~35 times in the original program against the protected patient-level extract. Driven here against a 13-row mock one-row-per-patient-year table (id, py, ig, sex). Two lines were adapted to run on the current Jenner release, both filed as engine regressions: (1) the person-years aggregation step, originally `proc means ... by &var; ods output summary=smr_all;`, is replaced with `proc summary ... class &var; ... output out=...` -- an equivalent aggregation pattern the author already uses himself elsewhere in the same program (section 6.3) -- because Jenner's ODS OUTPUT of a BY-processed PROC MEANS table currently keeps only the last BY group and drops the BY variable; (2) the row-label assignment, originally `modal = &var;` reading the CLASS variable back from PROC GLIMMIX's ParameterEstimates output, is replaced with `modal = Effect;` because Jenner's GLIMMIX ODS OUTPUT does not emit the CLASS-variable-named column real SAS 9.4 provides alongside Effect. The regression math (Poisson GLIMMIX with a log person-years offset) is unchanged."
+}

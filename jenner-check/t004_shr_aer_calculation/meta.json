@@ -1,0 +1,7 @@
+{
+  "bundle": "t004_shr_aer_calculation",
+  "source_file": "Infection Study - BS.sas",
+  "source_blob_sha": "df951d6183379cefbb43ae25c9150b58f4777302",
+  "source_commit": "dc8d01fc0c4ccc4737a84b011e87911131332b90",
+  "notes": "Reproduces the paper's SMR/AER risk-quantification arithmetic (section 6.3, lines ~618-797) unmodified: a multi-way PROC SUMMARY (CLASS/TYPES/OUTPUT) that aggregates observed severe-infection hospitalisations, population-expected counts and person-years overall and per risk factor, a SELECT/WHEN block that labels each aggregate row by its risk factor, then the standardised morbidity ratio (SMR), absolute excess risk per 10,000 person-years (AER) and exact Poisson (chi-square-based) 95% confidence interval formulas. Scaled down from the original's ~25 risk factors to two (sex, typeg) and driven by a small mock 8-row aggregate table standing in for 'shr_aer_inf_grave' (built upstream in the original program from the protected FCCSS/BCCSS patient extracts). No syntax adaptations were needed for this bundle."
+}

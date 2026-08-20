@@ -1,0 +1,24 @@
+                                                   The FREQ Procedure
+
+                                              Cumulative    Cumulative
+typeg               Frequency    Percent     Frequency      Percent
+-------------------------------------------------------------------------
+Nephroblastome              3     30.00            3        30.00
+Neuroblastome               3     30.00            6        60.00
+Tissus mous                 1     10.00            7        70.00
+Os                          1     10.00            8        80.00
+Cerveau                     1     10.00            9        90.00
+Thyro�de                    1     10.00           10       100.00
+
+id             typeg  sex
+ 1  Nephroblastome      1
+ 6  Nephroblastome      2
+10  Nephroblastome      1
+ 2     Neuroblastome    2
+ 3     Neuroblastome    1
+ 8     Neuroblastome    1
+ 4       Tissus mous    1
+ 5               Os     2
+ 9           Cerveau    2
+ 7          Thyro�de    1
+

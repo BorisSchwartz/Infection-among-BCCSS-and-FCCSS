@@ -1,0 +1,19 @@
+                                                   The FREQ Procedure
+
+                                       Cumulative    Cumulative
+inf          Frequency    Percent     Frequency      Percent
+------------------------------------------------------------------
+choc_sris            2     25.00            2        25.00
+low                  3     37.50            5        62.50
+sepsis               3     37.50            8       100.00
+
+id  code1                   inf   inf_num
+ 1  A483   choc_sris                    3
+ 1  A021   sepsis                       2
+ 2  A400   sepsis                       2
+ 2  J130   low                          1
+ 3  R572   choc_sris                    3
+ 4  0270   sepsis                       2
+ 5  M010   low                          1
+ 6  B959   low                          1
+

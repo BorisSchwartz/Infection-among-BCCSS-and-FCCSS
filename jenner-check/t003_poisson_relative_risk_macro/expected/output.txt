@@ -1,0 +1,35 @@
+     The GLIMMIX Procedure      
+       Model Information        
+
+Item                       Value
+----------------------  --------
+Distribution             poisson
+Link Function           identity
+Estimation Technique        rspl
+Number of Observations         2
+
+       Number of Observations        
+
+Description                     Value
+---------------------------  --------
+Number of Observations Read         2
+Number of Observations Used         2
+
+                      Solutions for Fixed Effects                       
+
+Effect       Estimate  Std Error   t Value  Pr > |t|     Lower     Upper
+-----------  --------  ---------  --------  --------  --------  --------
+Intercept      0.0831     1.4142      0.06    0.9532   -2.6887    2.8549
+C(sex)[T.2]    0.2683     2.0000      0.13    0.8933   -3.6517    4.1882
+
+      Fit Statistics       
+
+Statistic             Value
+-----------------  --------
+-2 Log Likelihood    5.2274
+AIC                  9.2274
+BIC                  6.6137
+
+              Effect                                                                                                                                                                                                     modal  n    RR            IC_RER      pv
+C(sex)[T.2]           C(sex)[T.2]                                                                                                                                                                                               2  1.31  1.31 (   .-   .)  0.8933
+
